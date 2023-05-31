@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "hm7"
+version = "0.1.0"
+description = ""
+authors = ["Oleksii Panpukha <58779018+3xecut0r@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sqlalchemy = "^2.0.15"
+psycopg2-binary = "^2.9.6"
+faker = "^18.9.0"
+alembic = "^1.11.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

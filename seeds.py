@@ -1,8 +1,8 @@
-from sqlalchemy import Table, Column, Integer, String, Date, ForeignKey, create_engine
-from sqlalchemy.orm import relationship, declarative_base, sessionmaker
-import psycopg2
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 from faker import Faker
 from random import randint, choice
+from datetime import datetime, timedelta, date
 
 
 disciplines = [
@@ -62,9 +62,22 @@ class Grades(Base):
     date_of = Column(Date)
 
 
+def get_list_date(start: date, end: date) -> list[date]:
+    result = []
+    current = start
+    while current <= end:
+        if current.isoweekday() < 5:
+            result.append(current)
+        current += timedelta(1)
+    return result
+
+
 Base.metadata.create_all(engine)
 
 if __name__ == '__main__':
+    start_study = datetime.strptime('2022-09-01', '%Y-%m-%d')
+    end_study = datetime.strptime('2023-06-15', '%Y-%m-%d')
+    list_dates = get_list_date(start_study, end_study)
     teachers = [fake.name() for _ in range(NUMBER_TEACHER)]
     for el in teachers:
         new_teacher = Teacher(fullname=el)
@@ -79,9 +92,17 @@ if __name__ == '__main__':
         session.add(new_group)
     students = [fake.name() for _ in range(NUMBER_STUDENTS)]
     g = session.query(Group).all()
+    d = session.query(Disciplines).all()
     for el in students:
         group = choice(g)
         new_student = Student(fullname=el, group_id=group.id)
         session.add(new_student)
+        for discipline in d:
+            new_grade = Grades(
+                discipline_id=discipline.id,
+                student_id=new_student.id,
+                grade=randint(1, 12),
+                date_of=date.today()
+            )
+            session.add(new_grade)
     session.commit()
-
