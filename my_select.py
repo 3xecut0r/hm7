@@ -129,6 +129,33 @@ def select_10(student_id, teacher_id):
     return result
 
 
+def additional_select_1(teacher_id, student_id):
+    result = session.query(func.round(func.avg(Grade.grade), 2).label('avg_grade'),
+                           Teacher.first_name,
+                           Teacher.last_name,
+                           Student.fullname)\
+        .select_from(Grade)\
+        .join(Discipline)\
+        .join(Teacher)\
+        .join(Student)\
+        .filter(and_(Teacher.id == teacher_id, Student.id == student_id)) \
+        .group_by(Teacher.first_name, Teacher.last_name,  Student.fullname) \
+        .all()
+    return result
+
+
+def additional_select_2(group_name, discipline_name):
+    result = session.query(Student.fullname, Grade.grade)\
+        .select_from(Grade)\
+        .join(Discipline)\
+        .join(Student)\
+        .join(Group)\
+        .filter(and_(Group.name == group_name, Discipline.name == discipline_name))\
+        .order_by(Grade.date_of.desc())\
+        .limit(1)\
+        .all()
+    return result
+
 
 
 if __name__ == '__main__':
@@ -164,6 +191,10 @@ if __name__ == '__main__':
     pprint(select_9(34))
     print('*' * 100)
     pprint(select_10(44, 2))
+    print('*' * 100)
+    pprint(additional_select_1(2, 45))
+    print('*' * 100)
+    pprint(additional_select_2('01wj', 'Math'))
     print('*' * 100)
 
 

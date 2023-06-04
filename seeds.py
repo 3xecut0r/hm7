@@ -1,9 +1,8 @@
 from src.db import session
 from src.models import Teacher, Discipline, Group, Student, Grade
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from faker import Faker
 from random import randint, choice
-from datetime import date
 
 disciplines = [
     'Math',
